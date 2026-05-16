@@ -33,7 +33,7 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
 
-        run: ./gradlew clean build
+        # run: ./gradlew clean build
 
       - name: jar 파일 이름 변경
         run: mv ./build/libs/NTeam-BE-0.0.1-SNAPSHOT.jar ./app.jar
@@ -42,6 +42,15 @@ jobs:
         run: |
           echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
           chmod 600 private_key.pem
+
+      - name: HOST CHECK
+        run: |
+          if [ -z "${{ secrets.EC2_HOST }}" ]; then
+            echo "HOST EMPTY"
+            exit 1
+          else
+            echo "HOST EXISTS"
+          fi
 
       - name: EC2로 jar 파일 전송
         uses: appleboy/scp-action@v0.1.7
