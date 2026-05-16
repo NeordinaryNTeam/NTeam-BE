@@ -2,8 +2,13 @@ package com.example.nteambe.domain.spot.service;
 
 import com.example.nteambe.domain.spot.dto.CreateSavedSpotResDTO;
 import com.example.nteambe.domain.spot.entity.SavedSpot;
+import com.example.nteambe.domain.spot.entity.Spot;
+import com.example.nteambe.domain.spot.exception.code.SpotErrorCode;
 import com.example.nteambe.domain.spot.repository.SavedSpotRepository;
+import com.example.nteambe.domain.spot.repository.SpotRepository;
+import com.example.nteambe.domain.user.entity.User;
 import com.example.nteambe.domain.user.repository.UserRepository;
+import com.example.nteambe.global.apiPayload.exception.ProjectException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,16 +21,37 @@ import java.util.List;
 public class SavedSpotService {
 
     private final SavedSpotRepository savedSpotRepository;
+    private final SpotRepository spotRepository;
     private final UserRepository userRepository;
 
-    public List<SavedSpot> getSavedSpots() {
-        return List.of();
+    public List<SavedSpot> getSavedSpots(Long userId, String deviceToken) {
+        //TODO- User 에러 핸들링 추가
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ProjectException(SpotErrorCode.SPOT_NOT_FOUND));
+        return savedSpotRepository.findByUser(user);
     }
 
     @Transactional
-    public CreateSavedSpotResDTO createSavedSpot(Long spotId) {
+    public CreateSavedSpotResDTO createSavedSpot(Long userId, Long spotId) {
+        //TODO- User 에러 핸들링 추가
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ProjectException(SpotErrorCode.SPOT_NOT_FOUND));
+        Spot spot = spotRepository.findById(spotId)
+                .orElseThrow(() -> new ProjectException(SpotErrorCode.SPOT_NOT_FOUND));
+
+        if (savedSpotRepository.existsByUserAndSpot(user, spot)) {
+            throw new ProjectException(SpotErrorCode.SAVED_SPOT_ALREADY_SAVED);
+        }
+
+        SavedSpot savedSpot = SavedSpot.builder()
+                .user(user)
+                .spot(spot)
+                .build();
+
+        SavedSpot saved = savedSpotRepository.save(savedSpot);
+
         return CreateSavedSpotResDTO.builder()
-                .savedSpotId(0L)
+                .savedSpotId(saved.getId())
                 .build();
     }
 }

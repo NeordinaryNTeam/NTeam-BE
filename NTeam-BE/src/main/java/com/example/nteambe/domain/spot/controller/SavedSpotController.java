@@ -24,20 +24,26 @@ public class SavedSpotController {
 
     private final SavedSpotService savedSpotService;
 
-    @Operation(description = "로그인한 사용자의 저장된 스팟 목록을 조회합니다.")
+    @Operation(
+            summary = "Saved Spot 조회",
+            description = "저장된 Spot 목록을 조회합니다.")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "SAVED_SPOT200_1 - 성공적으로 저장된 스팟 목록을 조회했습니다."),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "COMMON401_1 - 인증되지 않았습니다.")
     })
     @GetMapping
-    public ResponseEntity<ApiResponse<List<SavedSpotListResDTO>>> getSavedSpots() {
+    public ResponseEntity<ApiResponse<List<SavedSpotListResDTO>>> getSavedSpots(
+            @RequestAttribute Long userId,
+            @RequestHeader String deviceToken
+    ) {
         return ResponseEntity.ok(ApiResponse.onSuccess(
                 SpotSuccessCode.SAVED_SPOT_LIST,
-                SavedSpotConverter.toSavedSpotListResDTOs(savedSpotService.getSavedSpots())
+                SavedSpotConverter.toSavedSpotListResDTOs(savedSpotService.getSavedSpots(userId, deviceToken))
         ));
     }
 
-    @Operation(description = "스팟을 저장 목록에 추가합니다.")
+    @Operation(summary="Saved Spot 추가",
+            description = "스팟을 저장 목록에 추가합니다.")
     @ApiResponses({
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "SAVED_SPOT201_1 - 성공적으로 스팟을 저장했습니다."),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "COMMON401_1 - 인증되지 않았습니다."),
@@ -46,12 +52,13 @@ public class SavedSpotController {
     })
     @PostMapping
     public ResponseEntity<ApiResponse<CreateSavedSpotResDTO>> createSavedSpot(
+            @RequestAttribute Long userId,
             @RequestBody CreateSavedSpotReqDTO request
     ) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.onSuccess(
                         SpotSuccessCode.SAVED_SPOT_CREATE,
-                        savedSpotService.createSavedSpot(request.getSpotId())
+                        savedSpotService.createSavedSpot(userId, request.getSpotId())
                 ));
     }
 }
