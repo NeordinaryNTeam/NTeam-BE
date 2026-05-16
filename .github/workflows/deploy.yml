@@ -34,7 +34,6 @@ jobs:
           AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
           AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
-
         run: ./gradlew clean build
 
       - name: jar 파일 이름 변경
@@ -55,7 +54,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "./NTeam-BE/app.jar"
+          source: "app.jar"
           target: "/home/ubuntu/app"
           strip_components: 2
 
@@ -67,18 +66,18 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             PID=$(pgrep -f 'app.jar' || true)
-          
+
             if [ ! -z "$PID" ]; then
               kill -15 $PID
               sleep 5
             fi
-          
+
             nohup env \
             AWS_ACCESS_KEY="${{ secrets.AWS_ACCESS_KEY }}" \
             AWS_SECRET_KEY="${{ secrets.AWS_SECRET_KEY }}" \
             AWS_REGION="${{ secrets.AWS_REGION }}" \
             AWS_BUCKET_NAME="${{ secrets.AWS_BUCKET_NAME }}" \
             java -jar /home/ubuntu/app/app.jar \
-            > /home/ubuntu/app/app.log 2>&1 &
-          
+            > /home/ubuntu/app/app.log 2>&1 < /dev/null &
+
             disown
