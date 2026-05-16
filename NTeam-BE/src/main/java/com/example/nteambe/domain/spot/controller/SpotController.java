@@ -4,6 +4,7 @@ import com.example.nteambe.domain.spot.dto.request.SaveSpotReqDto;
 import com.example.nteambe.domain.spot.dto.request.SaveSpotStatusListReqDto;
 import com.example.nteambe.domain.spot.dto.response.SaveSpotResDto;
 import com.example.nteambe.domain.spot.dto.response.SpotResDto;
+import com.example.nteambe.domain.spot.dto.response.SpotStatusListResDto;
 import com.example.nteambe.domain.spot.enums.DifficultyType;
 import com.example.nteambe.domain.spot.enums.FeatureType;
 import com.example.nteambe.domain.spot.enums.StatusType;
@@ -68,8 +69,11 @@ public class SpotController {
             summary = "Spot 저장",
             description = """
                     ### Spot 저장 API
-                    
+
                     Spot을 저장합니다.
+
+                    - `name`, `captionImgUrl`, `latitude`, `longitude`, `main_address`, `sub_address`, `difficulty`, `features`: 필수
+                    - `statuses`: 선택 (상태는 별도 API로도 등록 가능)
                     """
     )
     @ApiResponses({
@@ -92,6 +96,9 @@ public class SpotController {
                     ### Spot 상태 등록 API
 
                     Spot에 상태 묶음을 등록합니다.
+
+                    - `description`: 이번 상태 기록에 대한 설명 (선택)
+                    - `statuses`: 등록할 상태 목록
                     """
     )
     @ApiResponses({
@@ -99,7 +106,7 @@ public class SpotController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "SPOT404_1 - 해당 스팟을 찾을 수 없습니다.")
     })
     @PostMapping("/{spotId}/status")
-    public ResponseEntity<ApiResponse<List<StatusType>>> postSpotStatusList(
+    public ResponseEntity<ApiResponse<SpotStatusListResDto>> postSpotStatusList(
             @RequestAttribute Long userId,
             @RequestHeader String deviceToken,
             @PathVariable Long spotId,

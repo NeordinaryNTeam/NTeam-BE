@@ -5,5 +5,6 @@ import com.example.nteambe.domain.spot.enums.StatusType;
 import java.util.List;
 
 public record SaveSpotStatusListReqDto(
+        String description,
         List<StatusType> statuses
 ) {}
