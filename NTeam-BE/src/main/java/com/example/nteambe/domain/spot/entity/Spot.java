@@ -2,12 +2,14 @@ package com.example.nteambe.domain.spot.entity;
 
 import com.example.nteambe.domain.spot.enums.DifficultyType;
 import com.example.nteambe.domain.spot.enums.FeatureType;
-import com.example.nteambe.domain.spot.enums.StatusType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -57,13 +59,10 @@ public class Spot {
     @Builder.Default
     private Set<FeatureType> features = new HashSet<>();
 
-    // 스팟 상태
-    @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(name = "spot_status", joinColumns = @JoinColumn(name = "spot_id"))
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status_name")
+    @OneToMany(mappedBy = "spot", fetch = FetchType.LAZY)
+    @BatchSize(size = 50)
     @Builder.Default
-    private Set<StatusType> statuses = new HashSet<>();
+    private List<SpotStatusList> statusList = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {

@@ -36,7 +36,7 @@ public class FileController {
         String uploadedUrl = fileService.uploadFile(file);
 
         FileResDto response = FileResDto.builder()
-                .fileId(uploadedUrl)
+                .fileUrl(uploadedUrl)
                 .build();
 
         return ApiResponse.onSuccess(GeneralSuccessCode.OK, response);

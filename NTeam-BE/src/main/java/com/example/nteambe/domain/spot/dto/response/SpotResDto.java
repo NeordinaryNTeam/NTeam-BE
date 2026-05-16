@@ -20,7 +20,7 @@ public record SpotResDto(
         DifficultyType difficulty,
         String description,
         List<FeatureType> features,
-        List<StatusType> statuses,
+        List<List<StatusType>> statusList,
         LocalDateTime createdAt
 ) {
 }
