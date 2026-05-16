@@ -5,7 +5,6 @@ import com.example.nteambe.domain.spot.dto.response.SaveSpotResDto;
 import com.example.nteambe.domain.spot.dto.response.SpotResDto;
 import com.example.nteambe.domain.spot.enums.DifficultyType;
 import com.example.nteambe.domain.spot.enums.FeatureType;
-import com.example.nteambe.domain.spot.service.SpotService;
 import com.example.nteambe.global.apiPayload.ApiResponse;
 import com.example.nteambe.global.apiPayload.code.GeneralSuccessCode;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,7 +17,6 @@ import java.util.List;
 @RequestMapping("/api/spots")
 @RequiredArgsConstructor
 public class SpotController {
-    private final SpotService spotService;
 
     @Operation(
             summary = "Spot 조회",

@@ -2,7 +2,7 @@ package com.example.nteambe.domain.spot.entity;
 
 import com.example.nteambe.domain.spot.enums.DifficultyType;
 import com.example.nteambe.domain.spot.enums.FeatureType;
-import com.example.nteambe.domain.spot.enums.Status;
+import com.example.nteambe.domain.spot.enums.StatusType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -60,7 +60,7 @@ public class Spot {
     @Enumerated(EnumType.STRING)
     @Column(name = "status_name")
     @Builder.Default
-    private List<Status> statuses = new ArrayList<>();
+    private List<StatusType> statuses = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {
