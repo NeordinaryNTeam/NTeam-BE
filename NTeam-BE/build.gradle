@@ -34,9 +34,6 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-    runtimeOnly 'com.h2database:h2'
-    testRuntimeOnly 'com.h2database:h2'
-
     testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
