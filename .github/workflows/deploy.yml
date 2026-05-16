@@ -72,3 +72,4 @@ jobs:
           key_path: ./NTeam-BE/private_key.pem
           script: |
             ls -al /home/ubuntu/app
+          
