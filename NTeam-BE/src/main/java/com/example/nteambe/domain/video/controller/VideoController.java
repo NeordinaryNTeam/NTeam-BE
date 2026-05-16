@@ -2,6 +2,7 @@ package com.example.nteambe.domain.video.controller;
 
 import com.example.nteambe.domain.video.dto.request.SaveVideoReqDto;
 import com.example.nteambe.domain.video.dto.response.VideoResDto;
+import com.example.nteambe.domain.video.exception.VideoErrorCode;
 import com.example.nteambe.domain.video.exception.VideoSuccessCode;
 import com.example.nteambe.domain.video.service.SpotVideoService;
 import com.example.nteambe.global.apiPayload.ApiResponse;
@@ -9,6 +10,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +22,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VideoController {
     private final SpotVideoService spotVideoService;
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiResponse<Void>> handleValidationException(MethodArgumentNotValidException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.onFailure(VideoErrorCode.VIDEO_BAD_REQUEST, null));
+    }
 
     @Operation(
             summary = "영상 조회",

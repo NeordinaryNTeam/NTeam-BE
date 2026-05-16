@@ -1,5 +1,7 @@
 package com.example.nteambe.domain.fileService.service;
 
+import com.example.nteambe.domain.fileService.exception.code.FileErrorCode;
+import com.example.nteambe.global.apiPayload.exception.ProjectException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
@@ -85,7 +87,7 @@ public class FileService {
     private void validateFile(MultipartFile file) {
 
         if (file.isEmpty()) {
-            throw new IllegalArgumentException("파일이 비어 있습니다.");
+            throw new ProjectException(FileErrorCode.FILE_EMPTY);
         }
 
         String contentType = file.getContentType();
@@ -93,7 +95,7 @@ public class FileService {
         if (contentType == null ||
                 ALLOWED_CONTENT_TYPES.stream().noneMatch(type -> type.equalsIgnoreCase(contentType))) {
 
-            throw new IllegalArgumentException("이미지 또는 영상 파일만 업로드 가능합니다.");
+            throw new ProjectException(FileErrorCode.FILE_INVALID_TYPE);
         }
     }
 

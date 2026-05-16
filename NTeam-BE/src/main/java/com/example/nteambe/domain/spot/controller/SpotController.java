@@ -10,7 +10,6 @@ import com.example.nteambe.domain.spot.exception.code.SpotErrorCode;
 import com.example.nteambe.domain.spot.exception.code.SpotSuccessCode;
 import com.example.nteambe.domain.spot.service.SpotService;
 import com.example.nteambe.global.apiPayload.ApiResponse;
-import com.example.nteambe.global.apiPayload.code.GeneralSuccessCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
