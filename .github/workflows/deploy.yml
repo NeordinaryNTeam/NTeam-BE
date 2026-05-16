@@ -54,7 +54,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: "app.jar"
+          source: "./NTeam-BE/app.jar"
           target: "/home/ubuntu/app"
           strip_components: 2
 
