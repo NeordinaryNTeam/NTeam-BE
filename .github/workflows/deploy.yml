@@ -35,7 +35,7 @@ jobs:
         run: ./gradlew clean build
 
       - name: jar 파일 이름 변경
-        run: mv ./build/libs/*.jar app.jar
+        run: mv ./build/libs/NTeam-BE-0.0.1-SNAPSHOT.jar ./app.jar
 
       - name: EC2로 jar 파일 전송
         uses: appleboy/scp-action@v0.1.7
