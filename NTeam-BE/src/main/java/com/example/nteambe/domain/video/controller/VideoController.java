@@ -2,16 +2,13 @@ package com.example.nteambe.domain.video.controller;
 
 import com.example.nteambe.domain.video.dto.request.SaveVideoReqDto;
 import com.example.nteambe.domain.video.dto.response.VideoResDto;
-import com.example.nteambe.domain.video.exception.VideoErrorCode;
+import com.example.nteambe.domain.video.exception.VideoSuccessCode;
 import com.example.nteambe.domain.video.service.SpotVideoService;
 import com.example.nteambe.global.apiPayload.ApiResponse;
-import com.example.nteambe.global.apiPayload.code.GeneralSuccessCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,12 +18,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class VideoController {
     private final SpotVideoService spotVideoService;
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Void>> handleValidationException(MethodArgumentNotValidException e) {
-        return ResponseEntity.status(400)
-                .body(ApiResponse.onFailure(VideoErrorCode.VIDEO_BAD_REQUEST, null));
-    }
 
     @Operation(
             summary = "영상 조회",
@@ -47,7 +38,7 @@ public class VideoController {
             @RequestParam Long spotId
     ) {
         List<VideoResDto> result = spotVideoService.getVideos(spotId);
-        return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);
+        return ApiResponse.onSuccess(VideoSuccessCode.VIDEO_LIST, result);
     }
 
     @Operation(
@@ -70,6 +61,6 @@ public class VideoController {
             @RequestBody @Valid SaveVideoReqDto dto
     ) {
         VideoResDto result = spotVideoService.createVideo(dto, userId);
-        return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);
+        return ApiResponse.onSuccess(VideoSuccessCode.VIDEO_CREATE, result);
     }
 }
