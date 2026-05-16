@@ -1,7 +1,7 @@
 package com.example.nteambe.domain.spot.entity;
 
-import com.example.nteambe.domain.spot.enums.Difficulty;
-import com.example.nteambe.domain.spot.enums.Feature;
+import com.example.nteambe.domain.spot.enums.DifficultyType;
+import com.example.nteambe.domain.spot.enums.FeatureType;
 import com.example.nteambe.domain.spot.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
@@ -38,7 +38,7 @@ public class Spot {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Difficulty difficulty;
+    private DifficultyType difficulty;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -49,7 +49,7 @@ public class Spot {
     @Enumerated(EnumType.STRING)
     @Column(name = "feature_name")
     @Builder.Default
-    private List<Feature> features = new ArrayList<>();
+    private List<FeatureType> features = new ArrayList<>();
 
     // 스팟 상태
     @ElementCollection(fetch = FetchType.LAZY)
