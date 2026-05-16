@@ -43,6 +43,9 @@ public class Spot {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "description")
+    private String description;
+
     // 스팟 특징
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "spot_feature", joinColumns = @JoinColumn(name = "spot_id"))
