@@ -100,6 +100,8 @@ public class SpotController {
     })
     @PostMapping("/{spotId}/status")
     public ResponseEntity<ApiResponse<List<StatusType>>> postSpotStatusList(
+            @RequestAttribute Long userId,
+            @RequestHeader String deviceToken,
             @PathVariable Long spotId,
             @RequestBody SaveSpotStatusListReqDto dto
     ) {
