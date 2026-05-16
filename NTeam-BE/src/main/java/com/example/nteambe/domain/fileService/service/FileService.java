@@ -2,10 +2,16 @@ package com.example.nteambe.domain.fileService.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
@@ -53,6 +59,29 @@ public class FileService {
         return getFileUrl(fileName);
     }
 
+    public ResponseEntity<InputStreamResource> viewFile(String fileUrl) {
+
+        String key = extractKeyFromUrl(fileUrl);
+
+        GetObjectRequest getObjectRequest =
+                GetObjectRequest.builder()
+                        .bucket(bucket)
+                        .key(key)
+                        .build();
+
+        ResponseInputStream<GetObjectResponse> s3Object =
+                s3Client.getObject(getObjectRequest);
+
+        return ResponseEntity.ok()
+                .contentType(
+                        MediaType.parseMediaType(
+                                s3Object.response().contentType()
+                        )
+                )
+                .body(new InputStreamResource(s3Object));
+    }
+
+
     private void validateFile(MultipartFile file) {
 
         if (file.isEmpty()) {
@@ -80,5 +109,15 @@ public class FileService {
                 bucket,
                 fileName
         );
+    }
+
+    private String extractKeyFromUrl(String fileUrl) {
+
+        String baseUrl = String.format(
+                "https://%s.s3.ap-northeast-2.amazonaws.com/",
+                bucket
+        );
+
+        return fileUrl.replace(baseUrl, "");
     }
 }
