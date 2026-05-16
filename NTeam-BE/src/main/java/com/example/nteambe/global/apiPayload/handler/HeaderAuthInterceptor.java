@@ -1,6 +1,8 @@
 package com.example.nteambe.global.apiPayload.handler;
 
 import com.example.nteambe.domain.user.service.UserService;
+import com.example.nteambe.global.apiPayload.code.GeneralErrorCode;
+import com.example.nteambe.global.apiPayload.exception.ProjectException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +21,7 @@ public class HeaderAuthInterceptor implements HandlerInterceptor {
         Long userId = userService.getUserIdByToken(token);
 
         if (userId == null) {
-            throw new Exception("유저를 찾을 수 없습니다.");
+            throw new ProjectException(GeneralErrorCode.UNAUTHORIZED);
         }
 
         request.setAttribute("userId", userId);
