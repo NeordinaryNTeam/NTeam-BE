@@ -10,6 +10,8 @@ import com.example.nteambe.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +36,10 @@ public class SavedSpotController {
     @GetMapping
     public ResponseEntity<ApiResponse<List<SavedSpotListResDTO>>> getSavedSpots(
             @RequestAttribute Long userId,
-            @RequestHeader String deviceToken
+            @RequestHeader
+            @NotBlank(message = "deviceToken은 필수입니다.")
+            @Size(max = 255, message = "deviceToken 길이 초과")
+            String deviceToken
     ) {
         return ResponseEntity.ok(ApiResponse.onSuccess(
                 SpotSuccessCode.SAVED_SPOT_LIST,
@@ -53,8 +58,15 @@ public class SavedSpotController {
     @PostMapping
     public ResponseEntity<ApiResponse<CreateSavedSpotResDTO>> createSavedSpot(
             @RequestAttribute Long userId,
-            @RequestHeader String deviceToken,
-            @RequestBody @Valid CreateSavedSpotReqDTO request
+
+            @RequestHeader
+            @NotBlank(message = "deviceToken은 필수입니다.")
+            @Size(max = 255, message = "deviceToken 길이 초과")
+            String deviceToken,
+
+            @RequestBody
+            @Valid
+            CreateSavedSpotReqDTO request
     ) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.onSuccess(

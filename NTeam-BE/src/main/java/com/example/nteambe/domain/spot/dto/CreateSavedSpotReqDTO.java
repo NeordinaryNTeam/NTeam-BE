@@ -9,8 +9,4 @@ public class CreateSavedSpotReqDTO {
     @NotNull
     @JsonProperty("spot_id")
     private Long spotId;
-
-
-
-
 }

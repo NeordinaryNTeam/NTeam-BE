@@ -7,6 +7,8 @@ import com.example.nteambe.global.apiPayload.ApiResponse;
 import com.example.nteambe.global.apiPayload.code.GeneralSuccessCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,7 +50,11 @@ public class UserController {
     @GetMapping("/me")
     public ApiResponse<GetUserNameResDto> getUserName(
             @RequestAttribute Long userId,
-            @RequestHeader String deviceToken
+
+            @NotBlank(message = "deviceToken은 필수입니다.")
+            @Size(max = 255, message = "deviceToken 길이 초과")
+            @RequestHeader
+            String deviceToken
     ) {
         String userName = userService.getUserNameByToken(deviceToken);
 

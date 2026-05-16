@@ -9,9 +9,11 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RestControllerAdvice
 public class GeneralExceptionAdvice {
@@ -38,14 +40,49 @@ public class GeneralExceptionAdvice {
 
     // @Valid 검증 실패 예외 처리
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiResponse<Map<String, String>>> handleMethodArgumentNotValidException(
-            MethodArgumentNotValidException e
+    public ResponseEntity<ApiResponse<Map<String, String>>> handleValidationException(
+            MethodArgumentNotValidException ex
     ) {
         Map<String, String> errors = new HashMap<>();
-        e.getBindingResult().getFieldErrors().forEach(error ->
-                errors.put(error.getField(), error.getDefaultMessage())
-        );
+
+        ex.getBindingResult()
+                .getFieldErrors()
+                .forEach(error -> {
+
+                    errors.computeIfAbsent(
+                            error.getField(),
+                            key -> error.getDefaultMessage());
+
+                });
+
         BaseErrorCode code = GeneralErrorCode.BAD_REQUEST;
+
+        return ResponseEntity.status(code.getStatus())
+                .body(ApiResponse.onFailure(code, errors));
+    }
+
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<ApiResponse<Map<String, String>>> handleHandlerValidationException(
+            HandlerMethodValidationException ex
+    ) {
+
+        Map<String, String> errors = new HashMap<>();
+
+        ex.getParameterValidationResults()
+                .forEach(validationResult -> {
+
+                    String parameterName =
+                            validationResult.getMethodParameter().getParameterName();
+
+                    validationResult.getResolvableErrors()
+                            .forEach(error -> errors.putIfAbsent(
+                                    parameterName,
+                                    error.getDefaultMessage()
+                            ));
+                });
+
+        BaseErrorCode code = GeneralErrorCode.BAD_REQUEST;
+
         return ResponseEntity.status(code.getStatus())
                 .body(ApiResponse.onFailure(code, errors));
     }
