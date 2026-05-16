@@ -8,6 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     defaults:
       run:
         working-directory: ./NTeam-BE
@@ -37,13 +38,18 @@ jobs:
       - name: jar 파일 이름 변경
         run: mv ./build/libs/NTeam-BE-0.0.1-SNAPSHOT.jar ./app.jar
 
+      - name: SSH KEY 파일 생성
+        run: |
+          echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
+          chmod 600 private_key.pem
+
       - name: EC2로 jar 파일 전송
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          source: "app.jar"
+          key_path: ./NTeam-BE/private_key.pem
+          source: "./NTeam-BE/app.jar"
           target: "/home/ubuntu/app"
 
       - name: EC2 서버 배포
@@ -51,7 +57,7 @@ jobs:
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_SSH_KEY }}
+          key_path: ./NTeam-BE/private_key.pem
           script: |
             pkill -f 'app.jar' || true
 
