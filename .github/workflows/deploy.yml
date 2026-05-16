@@ -88,14 +88,16 @@ jobs:
             echo "===== CHECK FILE ====="
             ls -al /home/ubuntu/app
 
-            echo "===== START NEW APP ====="
+            echo "===== EXPORT ENV ====="
 
-            nohup env \
-            AWS_ACCESS_KEY="${{ secrets.AWS_ACCESS_KEY }}" \
-            AWS_SECRET_KEY="${{ secrets.AWS_SECRET_KEY }}" \
-            AWS_REGION="${{ secrets.AWS_REGION }}" \
-            AWS_BUCKET_NAME="${{ secrets.AWS_BUCKET_NAME }}" \
-            java -jar /home/ubuntu/app/app.jar \
+            export AWS_ACCESS_KEY="${{ secrets.AWS_ACCESS_KEY }}"
+            export AWS_SECRET_KEY="${{ secrets.AWS_SECRET_KEY }}"
+            export AWS_REGION="${{ secrets.AWS_REGION }}"
+            export AWS_BUCKET_NAME="${{ secrets.AWS_BUCKET_NAME }}"
+
+            echo "===== START SPRING BOOT ====="
+
+            nohup java -jar /home/ubuntu/app/app.jar \
             > /home/ubuntu/app/app.log 2>&1 < /dev/null &
 
             sleep 10
