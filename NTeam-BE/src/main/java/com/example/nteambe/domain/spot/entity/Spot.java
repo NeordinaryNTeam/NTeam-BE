@@ -48,9 +48,6 @@ public class Spot {
     @Column(name = "caption_img_url")
     private String captionImgUrl;
 
-    @Column(name = "description")
-    private String description;
-
     // 스팟 특징
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "spot_feature", joinColumns = @JoinColumn(name = "spot_id"))

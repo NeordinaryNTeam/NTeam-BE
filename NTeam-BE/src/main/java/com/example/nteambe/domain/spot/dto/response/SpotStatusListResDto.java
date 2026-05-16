@@ -8,5 +8,6 @@ import java.util.List;
 @Builder
 public record SpotStatusListResDto(
         Long spotStatusListId,
+        String description,
         List<StatusType> statuses
 ) {}

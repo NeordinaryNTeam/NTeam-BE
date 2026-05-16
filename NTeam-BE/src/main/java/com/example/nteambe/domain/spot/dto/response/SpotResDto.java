@@ -2,7 +2,6 @@ package com.example.nteambe.domain.spot.dto.response;
 
 import com.example.nteambe.domain.spot.enums.DifficultyType;
 import com.example.nteambe.domain.spot.enums.FeatureType;
-import com.example.nteambe.domain.spot.enums.StatusType;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
@@ -18,9 +17,8 @@ public record SpotResDto(
         String mainAddress,
         String subAddress,
         DifficultyType difficulty,
-        String description,
         List<FeatureType> features,
-        List<List<StatusType>> statusList,
+        List<SpotStatusListResDto> statusList,
         LocalDateTime createdAt
 ) {
 }

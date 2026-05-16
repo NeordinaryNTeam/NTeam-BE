@@ -18,7 +18,6 @@ public record SaveSpotReqDto(
         @NotBlank @JsonProperty("main_address") String mainAddress,
         @NotBlank @JsonProperty("sub_address") String subAddress,
         @NotNull DifficultyType difficulty,
-        String description,
         @NotEmpty List<FeatureType> features,
         List<StatusType> statuses
 ) {
