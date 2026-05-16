@@ -65,8 +65,13 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            pkill -f 'app.jar' || true
-
+            PID=$(pgrep -f 'app.jar' || true)
+          
+            if [ ! -z "$PID" ]; then
+              kill -15 $PID
+              sleep 5
+            fi
+          
             nohup env \
             AWS_ACCESS_KEY="${{ secrets.AWS_ACCESS_KEY }}" \
             AWS_SECRET_KEY="${{ secrets.AWS_SECRET_KEY }}" \
@@ -74,3 +79,5 @@ jobs:
             AWS_BUCKET_NAME="${{ secrets.AWS_BUCKET_NAME }}" \
             java -jar /home/ubuntu/app/app.jar \
             > /home/ubuntu/app/app.log 2>&1 &
+          
+            disown
