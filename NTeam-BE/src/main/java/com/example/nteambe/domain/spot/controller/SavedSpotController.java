@@ -53,6 +53,7 @@ public class SavedSpotController {
     @PostMapping
     public ResponseEntity<ApiResponse<CreateSavedSpotResDTO>> createSavedSpot(
             @RequestAttribute Long userId,
+            @RequestHeader String deviceToken,
             @RequestBody CreateSavedSpotReqDTO request
     ) {
         return ResponseEntity.status(HttpStatus.CREATED)
