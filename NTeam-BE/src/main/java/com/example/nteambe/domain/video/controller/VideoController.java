@@ -2,6 +2,7 @@ package com.example.nteambe.domain.video.controller;
 
 import com.example.nteambe.domain.video.dto.request.SaveVideoReqDto;
 import com.example.nteambe.domain.video.dto.response.VideoResDto;
+import com.example.nteambe.domain.video.service.SpotVideoService;
 import com.example.nteambe.global.apiPayload.ApiResponse;
 import com.example.nteambe.global.apiPayload.code.GeneralSuccessCode;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,6 +15,7 @@ import java.util.List;
 @RequestMapping("/api/video")
 @RequiredArgsConstructor
 public class VideoController {
+    private final SpotVideoService spotVideoService;
 
     @Operation(
             summary = "영상 조회",
@@ -25,9 +27,12 @@ public class VideoController {
     )
     @GetMapping()
     public ApiResponse<List<VideoResDto>> getVideos(
-            @RequestParam() Long spotId
+            @RequestAttribute Long userId,
+            @RequestHeader String deviceToken,
+            @RequestParam Long spotId
     ) {
-        return ApiResponse.onSuccess(GeneralSuccessCode.OK, null);
+        List<VideoResDto> result = spotVideoService.getVideos(spotId);
+        return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);
     }
 
     @Operation(
@@ -41,8 +46,11 @@ public class VideoController {
     )
     @PostMapping()
     public ApiResponse<VideoResDto> postSaveVideo(
+            @RequestAttribute Long userId,
+            @RequestHeader String deviceToken,
             @RequestBody SaveVideoReqDto dto
-    ) {
-        return ApiResponse.onSuccess(GeneralSuccessCode.OK, null);
+    ) throws Exception {
+        VideoResDto result = spotVideoService.createVideo(dto, userId);
+        return ApiResponse.onSuccess(GeneralSuccessCode.OK, result);
     }
 }

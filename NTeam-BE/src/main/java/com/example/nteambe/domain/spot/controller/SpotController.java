@@ -49,6 +49,8 @@ public class SpotController {
     })
     @GetMapping()
     public ApiResponse<List<SpotResDto>> getSpots(
+            @RequestAttribute Long userId,
+            @RequestHeader String deviceToken,
             @RequestParam(required = false) String mainAddress,
             @RequestParam(required = false) String subAddress,
             @RequestParam(required = false) DifficultyType difficulty,
@@ -74,6 +76,8 @@ public class SpotController {
     })
     @PostMapping()
     public ResponseEntity<ApiResponse<SaveSpotResDto>> postSaveSpot(
+            @RequestAttribute Long userId,
+            @RequestHeader String deviceToken,
             @RequestBody @Valid SaveSpotReqDto dto
     ) {
         return ResponseEntity.status(HttpStatus.CREATED)
