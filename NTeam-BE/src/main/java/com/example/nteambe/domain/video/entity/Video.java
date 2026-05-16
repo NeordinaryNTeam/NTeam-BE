@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="video")
+@Table(name="spot_video")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
