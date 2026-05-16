@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.nteambe.domain.user.entity.User;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -17,15 +19,17 @@ public class UserService {
 
     @Transactional
     public Long saveUser(SignUpReqDto dto) {
-        return userRepository.findFirstByToken(dto.deviceToken())
-                .map(User::getId)
-                .orElseGet(() -> {
-                    User user = User.builder()
-                            .nickname(dto.nickName())
-                            .token(dto.deviceToken())
-                            .build();
-                    return userRepository.save(user).getId();
-                });
+        Optional<User> tempUser = userRepository.findFirstByToken(dto.deviceToken());
+
+        if(tempUser.isPresent()) {
+            throw new ProjectException(GeneralErrorCode.USER_ALREADY_EXIST);
+        } else {
+            User user = User.builder()
+                    .nickname(dto.nickName())
+                    .token(dto.deviceToken())
+                    .build();
+            return userRepository.save(user).getId();
+        }
     }
 
     public Long getUserIdByToken(String token) {

@@ -16,6 +16,8 @@ import com.example.nteambe.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,8 +54,14 @@ public class SpotController {
     })
     @GetMapping()
     public ApiResponse<List<SpotResDto>> getSpots(
-            @RequestAttribute Long userId,
-            @RequestHeader String deviceToken,
+            @RequestAttribute
+            Long userId,
+
+            @NotBlank(message = "deviceToken은 필수입니다.")
+            @Size(max = 255, message = "deviceToken 길이 초과")
+            @RequestHeader
+            String deviceToken,
+
             @RequestParam(required = false) String mainAddress,
             @RequestParam(required = false) String subAddress,
             @RequestParam(required = false) DifficultyType difficulty,
@@ -73,7 +81,6 @@ public class SpotController {
                     Spot을 저장합니다.
 
                     - `name`, `captionImgUrl`, `latitude`, `longitude`, `main_address`, `sub_address`, `difficulty`, `features`: 필수
-                    - `statuses`: 선택 (상태는 별도 API로도 등록 가능)
                     """
     )
     @ApiResponses({
@@ -82,9 +89,17 @@ public class SpotController {
     })
     @PostMapping()
     public ResponseEntity<ApiResponse<SaveSpotResDto>> postSaveSpot(
-            @RequestAttribute Long userId,
-            @RequestHeader String deviceToken,
-            @RequestBody @Valid SaveSpotReqDto dto
+            @RequestAttribute
+            Long userId,
+
+            @NotBlank(message = "deviceToken은 필수입니다.")
+            @Size(max = 255, message = "deviceToken 길이 초과")
+            @RequestHeader
+            String deviceToken,
+
+            @RequestBody
+            @Valid
+            SaveSpotReqDto dto
     ) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.onSuccess(SpotSuccessCode.SPOT_CREATE, spotService.createSpot(dto)));
@@ -108,7 +123,12 @@ public class SpotController {
     @PostMapping("/{spotId}/status")
     public ResponseEntity<ApiResponse<SpotStatusListResDto>> postSpotStatusList(
             @RequestAttribute Long userId,
-            @RequestHeader String deviceToken,
+
+            @NotBlank(message = "deviceToken은 필수입니다.")
+            @Size(max = 255, message = "deviceToken 길이 초과")
+            @RequestHeader
+            String deviceToken,
+
             @PathVariable Long spotId,
             @RequestBody SaveSpotStatusListReqDto dto
     ) {

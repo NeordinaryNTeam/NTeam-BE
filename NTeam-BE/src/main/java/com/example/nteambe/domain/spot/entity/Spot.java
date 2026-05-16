@@ -32,10 +32,10 @@ public class Spot {
     @Column(nullable = false)
     private String longitude;
 
-    @Column(name = "main_address")
+    @Column(name = "main_address", nullable = false)
     private String mainAddress;
 
-    @Column(name = "sub_address")
+    @Column(name = "sub_address", nullable = false)
     private String subAddress;
 
     @Enumerated(EnumType.STRING)
@@ -45,7 +45,7 @@ public class Spot {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "caption_img_url")
+    @Column(name = "caption_img_url", nullable = false)
     private String captionImgUrl;
 
     // 스팟 특징

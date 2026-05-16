@@ -17,6 +17,9 @@ public enum GeneralErrorCode implements BaseErrorCode {
     FORBIDDEN(HttpStatus.FORBIDDEN,
          "COMMON403_1",
         "접근이 금지되었습니다."),
+    USER_ALREADY_EXIST(HttpStatus.FORBIDDEN,
+            "COMMON403_2",
+            "이미 생성된 유저입니다."),
     NOT_FOUND(HttpStatus.NOT_FOUND, 
         "COMMON404_1",
         "해당 리소스를 찾을 수 없습니다."

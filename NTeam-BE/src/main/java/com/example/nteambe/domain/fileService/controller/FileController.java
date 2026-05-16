@@ -6,6 +6,7 @@ import com.example.nteambe.domain.fileService.service.FileService;
 import com.example.nteambe.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.ResponseEntity;
@@ -63,7 +64,11 @@ public class FileController {
     })
     @GetMapping("/download")
     public ResponseEntity<InputStreamResource> download(
-            @RequestParam String url
+            @RequestAttribute Long userId,
+            @RequestHeader String deviceToken,
+            @RequestParam
+            @NotBlank(message = "url is required")
+            String url
     ) {
         return fileService.viewFile(url);
     }
