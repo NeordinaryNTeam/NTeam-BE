@@ -1,6 +1,6 @@
 package com.example.nteambe.domain.spot.enums;
 
-public enum Feature {
+public enum FeatureType {
     STAIRS, HANDRAIL_BAR, LOW_WALL, HIGH_WALL, BOX_PLATFORM, PILLAR_POLE,
     RAMP, FENCE, PIPE, OUTER_WALL, BENCH_TABLE, WIDE_FLOOR, NARROW_SPACE,
     INDOOR, OUTDOOR, NIGHT_LIGHTING, LOW_HEIGHT, HIGH_HEIGHT, ENOUGH_RUNUP

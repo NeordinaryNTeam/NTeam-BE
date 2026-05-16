@@ -9,19 +9,32 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class FileService {
+
+    private static final List<String> ALLOWED_CONTENT_TYPES = List.of(
+            "image/jpeg",
+            "image/png",
+            "image/webp",
+            "image/gif",
+            "video/mp4",
+            "video/quicktime",
+            "video/x-msvideo",
+            "video/x-matroska"
+    );
+
     private final S3Client s3Client;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public String uploadVideo(MultipartFile file) throws IOException {
+    public String uploadFile(MultipartFile file) throws IOException {
 
-        validateVideo(file);
+        validateFile(file);
 
         String fileName = createFileName(file.getOriginalFilename());
 
@@ -40,7 +53,7 @@ public class FileService {
         return getFileUrl(fileName);
     }
 
-    private void validateVideo(MultipartFile file) {
+    private void validateFile(MultipartFile file) {
 
         if (file.isEmpty()) {
             throw new IllegalArgumentException("파일이 비어 있습니다.");
@@ -49,8 +62,9 @@ public class FileService {
         String contentType = file.getContentType();
 
         if (contentType == null ||
-                !contentType.startsWith("video")) {
-            throw new IllegalArgumentException("영상 파일만 업로드 가능합니다.");
+                ALLOWED_CONTENT_TYPES.stream().noneMatch(type -> type.equalsIgnoreCase(contentType))) {
+
+            throw new IllegalArgumentException("이미지 또는 영상 파일만 업로드 가능합니다.");
         }
     }
 
