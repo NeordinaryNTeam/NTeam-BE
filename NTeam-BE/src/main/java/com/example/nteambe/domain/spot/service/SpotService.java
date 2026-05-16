@@ -43,7 +43,12 @@ public class SpotService {
         if (statuses != null && !statuses.isEmpty()) {
             HashSet<StatusType> statusSet = new HashSet<>(statuses);
             spots = spots.stream()
-                    .filter(s -> new HashSet<>(s.getStatuses()).containsAll(statusSet))
+                    .filter(s -> {
+                        Set<StatusType> allStatuses = s.getStatusList().stream()
+                                .flatMap(sl -> sl.getStatuses().stream())
+                                .collect(Collectors.toSet());
+                        return allStatuses.containsAll(statusSet);
+                    })
                     .collect(Collectors.toList());
         }
 
@@ -66,13 +71,16 @@ public class SpotService {
                 .difficulty(dto.difficulty())
                 .description(dto.description())
                 .features(dto.features() != null ? new HashSet<>(dto.features()) : new HashSet<>())
-                .statuses(dto.statuses() != null ? new HashSet<>(dto.statuses()) : new HashSet<>())
                 .build();
         Spot saved = spotRepository.save(spot);
         return new SaveSpotResDto(saved.getId());
     }
 
     private SpotResDto toDto(Spot spot) {
+        List<List<StatusType>> statusListDtos = spot.getStatusList().stream()
+                .map(sl -> new ArrayList<>(sl.getStatuses()))
+                .collect(Collectors.toList());
+
         return SpotResDto.builder()
                 .spotId(spot.getId())
                 .name(spot.getName())
@@ -84,7 +92,7 @@ public class SpotService {
                 .difficulty(spot.getDifficulty())
                 .description(spot.getDescription())
                 .features(new ArrayList<>(spot.getFeatures()))
-                .statuses(new ArrayList<>(spot.getStatuses()))
+                .statusList(statusListDtos)
                 .createdAt(spot.getCreatedAt())
                 .build();
     }

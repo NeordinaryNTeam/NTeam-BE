@@ -1,0 +1,116 @@
+name: Spring Boot CI/CD
+
+on:
+  push:
+    branches:
+      - release
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    environment: Spring-server-secret
+
+    defaults:
+      run:
+        working-directory: ./NTeam-BE
+
+    steps:
+      - name: Repository Checkout
+        uses: actions/checkout@v4
+
+      - name: JDK 21 설치
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: gradlew 실행 권한 부여
+        run: chmod +x ./gradlew
+
+      - name: Spring Boot Build
+        env:
+          AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
+        run: ./gradlew clean build
+
+      - name: jar 파일 이름 변경
+        run: mv ./build/libs/NTeam-BE-0.0.1-SNAPSHOT.jar ./app.jar
+
+      - name: HOST CHECK
+        run: |
+          if [ -z "${{ secrets.EC2_HOST }}" ]; then
+            echo "HOST EMPTY"
+            exit 1
+          else
+            echo "HOST EXISTS"
+          fi
+
+      - name: EC2로 jar 파일 전송
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "./NTeam-BE/app.jar"
+          target: "/home/ubuntu/app"
+
+      - name: EC2 서버 배포
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            echo "===== DEPLOY START ====="
+
+            PID=$(pgrep -f 'app.jar' | head -n 1)
+
+            if [ -n "$PID" ]; then
+              echo "Stopping existing app: $PID"
+              kill -15 "$PID"
+
+              for i in {1..10}; do
+                if ! ps -p "$PID" > /dev/null; then
+                  echo "App stopped"
+                  break
+                fi
+
+                echo "Waiting for app to stop..."
+                sleep 1
+              done
+            else
+              echo "No existing app found"
+            fi
+
+            echo "===== CHECK FILE ====="
+            ls -al /home/ubuntu/app
+
+            echo "===== START NEW APP ====="
+
+            nohup env \
+            AWS_ACCESS_KEY="${{ secrets.AWS_ACCESS_KEY }}" \
+            AWS_SECRET_KEY="${{ secrets.AWS_SECRET_KEY }}" \
+            AWS_REGION="${{ secrets.AWS_REGION }}" \
+            AWS_BUCKET_NAME="${{ secrets.AWS_BUCKET_NAME }}" \
+            java -jar /home/ubuntu/app/app.jar \
+            > /home/ubuntu/app/app.log 2>&1 < /dev/null &
+
+            sleep 10
+
+            NEW_PID=$(pgrep -f 'app.jar' | head -n 1)
+
+            if [ -z "$NEW_PID" ]; then
+              echo "===== SPRING BOOT START FAILED ====="
+              echo "===== APP LOG ====="
+              cat /home/ubuntu/app/app.log
+              exit 1
+            fi
+
+            echo "===== SPRING BOOT START SUCCESS ====="
+            echo "PID: $NEW_PID"
+
+            echo "===== RECENT LOG ====="
+            tail -n 30 /home/ubuntu/app/app.log

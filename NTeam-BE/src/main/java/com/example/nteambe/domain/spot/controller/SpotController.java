@@ -1,6 +1,7 @@
 package com.example.nteambe.domain.spot.controller;
 
 import com.example.nteambe.domain.spot.dto.request.SaveSpotReqDto;
+import com.example.nteambe.domain.spot.dto.request.SaveSpotStatusListReqDto;
 import com.example.nteambe.domain.spot.dto.response.SaveSpotResDto;
 import com.example.nteambe.domain.spot.dto.response.SpotResDto;
 import com.example.nteambe.domain.spot.enums.DifficultyType;
@@ -9,6 +10,7 @@ import com.example.nteambe.domain.spot.enums.StatusType;
 import com.example.nteambe.domain.spot.exception.code.SpotErrorCode;
 import com.example.nteambe.domain.spot.exception.code.SpotSuccessCode;
 import com.example.nteambe.domain.spot.service.SpotService;
+import com.example.nteambe.domain.spot.service.SpotStatusListService;
 import com.example.nteambe.global.apiPayload.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -27,6 +29,7 @@ import java.util.List;
 public class SpotController {
 
     private final SpotService spotService;
+    private final SpotStatusListService spotStatusListService;
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Void>> handleValidationException(MethodArgumentNotValidException e) {
@@ -66,7 +69,7 @@ public class SpotController {
             description = """
                     ### Spot 저장 API
                     
-                    Spot을 저장합니다. 
+                    Spot을 저장합니다.
                     """
     )
     @ApiResponses({
@@ -81,5 +84,27 @@ public class SpotController {
     ) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponse.onSuccess(SpotSuccessCode.SPOT_CREATE, spotService.createSpot(dto)));
+    }
+
+    @Operation(
+            summary = "Spot Status 등록",
+            description = """
+                    ### Spot 상태 등록 API
+
+                    Spot에 상태 묶음을 등록합니다.
+                    """
+    )
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "SPOT201_2 - 스팟 상태가 성공적으로 등록되었습니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "SPOT404_1 - 해당 스팟을 찾을 수 없습니다.")
+    })
+    @PostMapping("/{spotId}/status")
+    public ResponseEntity<ApiResponse<List<StatusType>>> postSpotStatusList(
+            @PathVariable Long spotId,
+            @RequestBody SaveSpotStatusListReqDto dto
+    ) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.onSuccess(SpotSuccessCode.SPOT_STATUS_CREATE,
+                        spotStatusListService.createSpotStatus(spotId, dto)));
     }
 }
