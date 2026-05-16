@@ -28,6 +28,8 @@ public class SpotController {
     )
     @GetMapping()
     public ApiResponse<List<SpotResDto>> getSpots(
+            @RequestAttribute Long userId,
+            @RequestHeader String deviceToken,
             @RequestParam String mainAddress,
             @RequestParam String subAddress,
             @RequestParam DifficultyType difficulty,
