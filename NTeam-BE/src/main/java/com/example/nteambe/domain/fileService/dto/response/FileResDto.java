@@ -4,6 +4,6 @@ import lombok.Builder;
 
 @Builder
 public record FileResDto(
-        String fileId
+        String fileUrl
 ) {
 }

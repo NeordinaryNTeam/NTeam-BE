@@ -8,6 +8,7 @@ import com.example.nteambe.domain.spot.repository.SavedSpotRepository;
 import com.example.nteambe.domain.spot.repository.SpotRepository;
 import com.example.nteambe.domain.user.entity.User;
 import com.example.nteambe.domain.user.repository.UserRepository;
+import com.example.nteambe.global.apiPayload.code.GeneralErrorCode;
 import com.example.nteambe.global.apiPayload.exception.ProjectException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,17 +26,15 @@ public class SavedSpotService {
     private final UserRepository userRepository;
 
     public List<SavedSpot> getSavedSpots(Long userId, String deviceToken) {
-        //TODO- User 에러 핸들링 추가
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ProjectException(SpotErrorCode.SPOT_NOT_FOUND));
+                .orElseThrow(() -> new ProjectException(GeneralErrorCode.UNAUTHORIZED));
         return savedSpotRepository.findByUser(user);
     }
 
     @Transactional
     public CreateSavedSpotResDTO createSavedSpot(Long userId, Long spotId) {
-        //TODO- User 에러 핸들링 추가
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ProjectException(SpotErrorCode.SPOT_NOT_FOUND));
+                .orElseThrow(() -> new ProjectException(GeneralErrorCode.UNAUTHORIZED));
         Spot spot = spotRepository.findById(spotId)
                 .orElseThrow(() -> new ProjectException(SpotErrorCode.SPOT_NOT_FOUND));
 
