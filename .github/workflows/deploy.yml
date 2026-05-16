@@ -23,20 +23,23 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      - name: gradlew 실행 권한 부여
-        run: chmod +x ./gradlew
+#      - name: gradlew 실행 권한 부여
+#        run: chmod +x ./gradlew
 
-      - name: Spring Boot Build
-        env:
-          AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
-          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-          AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
+#      - name: Spring Boot Build
+#        env:
+#          AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+#          AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+#          AWS_REGION: ${{ secrets.AWS_REGION }}
+#          AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
+#
+#        run: ./gradlew clean build
 
-        # run: ./gradlew clean build
+#      - name: jar 파일 이름 변경
+#        run: mv ./build/libs/NTeam-BE-0.0.1-SNAPSHOT.jar ./app.jar
 
-      - name: jar 파일 이름 변경
-        run: mv ./build/libs/NTeam-BE-0.0.1-SNAPSHOT.jar ./app.jar
+      - name: 테스트용 app.jar 생성
+        run: touch app.jar
 
       - name: SSH KEY 파일 생성
         run: |
@@ -68,12 +71,4 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key_path: ./NTeam-BE/private_key.pem
           script: |
-            pkill -f 'app.jar' || true
-
-            nohup env \
-            AWS_ACCESS_KEY="${{ secrets.AWS_ACCESS_KEY }}" \
-            AWS_SECRET_KEY="${{ secrets.AWS_SECRET_KEY }}" \
-            AWS_REGION="${{ secrets.AWS_REGION }}" \
-            AWS_BUCKET_NAME="${{ secrets.AWS_BUCKET_NAME }}" \
-            java -jar /home/ubuntu/app/app.jar \
-            > /home/ubuntu/app/app.log 2>&1 &
+            ls -al /home/ubuntu/app
