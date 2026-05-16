@@ -10,6 +10,8 @@ import java.util.List;
 public class SpotSummaryResDTO {
     private Long spotId;
     private String name;
+    private String latitude;
+    private String longitude;
     private String mainAddress;
     private String subAddress;
     private String difficulty;

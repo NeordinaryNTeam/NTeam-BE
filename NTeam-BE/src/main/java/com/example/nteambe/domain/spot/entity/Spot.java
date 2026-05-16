@@ -7,8 +7,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name="spot")
@@ -43,6 +43,9 @@ public class Spot {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "caption_img_url")
+    private String captionImgUrl;
+
     @Column(name = "description")
     private String description;
 
@@ -52,7 +55,7 @@ public class Spot {
     @Enumerated(EnumType.STRING)
     @Column(name = "feature_name")
     @Builder.Default
-    private List<FeatureType> features = new ArrayList<>();
+    private Set<FeatureType> features = new HashSet<>();
 
     // 스팟 상태
     @ElementCollection(fetch = FetchType.LAZY)
@@ -60,7 +63,7 @@ public class Spot {
     @Enumerated(EnumType.STRING)
     @Column(name = "status_name")
     @Builder.Default
-    private List<StatusType> statuses = new ArrayList<>();
+    private Set<StatusType> statuses = new HashSet<>();
 
     @PrePersist
     public void prePersist() {
