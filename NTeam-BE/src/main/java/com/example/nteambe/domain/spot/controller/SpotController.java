@@ -73,7 +73,6 @@ public class SpotController {
                     Spot을 저장합니다.
 
                     - `name`, `captionImgUrl`, `latitude`, `longitude`, `main_address`, `sub_address`, `difficulty`, `features`: 필수
-                    - `statuses`: 선택 (상태는 별도 API로도 등록 가능)
                     """
     )
     @ApiResponses({
