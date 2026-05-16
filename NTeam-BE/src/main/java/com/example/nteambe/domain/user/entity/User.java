@@ -24,7 +24,7 @@ public class User {
     @Column(nullable = false, length = 50)
     private String nickname;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String token;
 
     @Column(name = "created_at", nullable = false, updatable = false)
