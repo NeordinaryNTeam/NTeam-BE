@@ -56,7 +56,6 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "./NTeam-BE/app.jar"
           target: "/home/ubuntu/app"
-          strip_components: 2
 
       - name: EC2 서버 배포
         uses: appleboy/ssh-action@v1.0.3
@@ -65,12 +64,31 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            PID=$(pgrep -f 'app.jar' || true)
+            echo "===== DEPLOY START ====="
 
-            if [ ! -z "$PID" ]; then
-              kill -15 $PID
-              sleep 5
+            PID=$(pgrep -f 'app.jar' | head -n 1)
+
+            if [ -n "$PID" ]; then
+              echo "Stopping existing app: $PID"
+              kill -15 "$PID"
+
+              for i in {1..10}; do
+                if ! ps -p "$PID" > /dev/null; then
+                  echo "App stopped"
+                  break
+                fi
+
+                echo "Waiting for app to stop..."
+                sleep 1
+              done
+            else
+              echo "No existing app found"
             fi
+
+            echo "===== CHECK FILE ====="
+            ls -al /home/ubuntu/app
+
+            echo "===== START NEW APP ====="
 
             nohup env \
             AWS_ACCESS_KEY="${{ secrets.AWS_ACCESS_KEY }}" \
@@ -80,4 +98,19 @@ jobs:
             java -jar /home/ubuntu/app/app.jar \
             > /home/ubuntu/app/app.log 2>&1 < /dev/null &
 
-            disown
+            sleep 10
+
+            NEW_PID=$(pgrep -f 'app.jar' | head -n 1)
+
+            if [ -z "$NEW_PID" ]; then
+              echo "===== SPRING BOOT START FAILED ====="
+              echo "===== APP LOG ====="
+              cat /home/ubuntu/app/app.log
+              exit 1
+            fi
+
+            echo "===== SPRING BOOT START SUCCESS ====="
+            echo "PID: $NEW_PID"
+
+            echo "===== RECENT LOG ====="
+            tail -n 30 /home/ubuntu/app/app.log
