@@ -2,21 +2,25 @@ package com.example.nteambe.domain.spot.dto.response;
 
 import com.example.nteambe.domain.spot.enums.DifficultyType;
 import com.example.nteambe.domain.spot.enums.FeatureType;
+import com.example.nteambe.domain.spot.enums.StatusType;
 import lombok.Builder;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder
 public record SpotResDto(
         Long spotId,
         String name,
-        List<FeatureType> distinct,
+        String captionImgUrl,
         String latitude,
         String longitude,
         String mainAddress,
         String subAddress,
         DifficultyType difficulty,
-        OffsetDateTime createdAt
+        String description,
+        List<FeatureType> features,
+        List<StatusType> statuses,
+        LocalDateTime createdAt
 ) {
 }

@@ -7,4 +7,8 @@ import lombok.Getter;
 public class CreateSavedSpotReqDTO {
     @JsonProperty("spot_id")
     private Long spotId;
+
+
+
+
 }
