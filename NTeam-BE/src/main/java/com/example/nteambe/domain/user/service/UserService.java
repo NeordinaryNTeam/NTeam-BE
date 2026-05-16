@@ -17,14 +17,15 @@ public class UserService {
 
     @Transactional
     public Long saveUser(SignUpReqDto dto) {
-        User user = User.builder()
-                .nickname(dto.nickName())
-                .token(dto.deviceToken())
-                .build();
-
-        User savedUser = userRepository.save(user);
-
-        return savedUser.getId();
+        return userRepository.findFirstByToken(dto.deviceToken())
+                .map(User::getId)
+                .orElseGet(() -> {
+                    User user = User.builder()
+                            .nickname(dto.nickName())
+                            .token(dto.deviceToken())
+                            .build();
+                    return userRepository.save(user).getId();
+                });
     }
 
     public Long getUserIdByToken(String token) {

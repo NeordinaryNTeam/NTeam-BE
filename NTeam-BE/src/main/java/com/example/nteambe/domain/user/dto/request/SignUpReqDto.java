@@ -1,6 +1,8 @@
 package com.example.nteambe.domain.user.dto.request;
 
+import jakarta.validation.constraints.NotBlank;
+
 public record SignUpReqDto(
-        String deviceToken,
-        String nickName
+        @NotBlank String deviceToken,
+        @NotBlank String nickName
 ) {}

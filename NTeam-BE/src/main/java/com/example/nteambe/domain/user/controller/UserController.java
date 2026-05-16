@@ -28,13 +28,8 @@ public class UserController {
     @PostMapping("/sign-up")
     public ApiResponse<String> postSignUp(
             @RequestBody SignUpReqDto dto
-    ) throws Exception {
-        Long result = userService.saveUser(dto);
-
-        if (result == null) {
-            throw new Exception("유저 저장 실패");
-        }
-
+    ) {
+        userService.saveUser(dto);
         return ApiResponse.onSuccess(GeneralSuccessCode.OK, "요청을 성공적으로 처리하였습니다.");
     }
 
@@ -54,17 +49,13 @@ public class UserController {
     public ApiResponse<GetUserNameResDto> getUserName(
             @RequestAttribute Long userId,
             @RequestHeader String deviceToken
-    ) throws Exception {
+    ) {
         String userName = userService.getUserNameByToken(deviceToken);
-
-        if (userName == null) {
-            throw new Exception("유저 조회 실패");
-        }
 
         GetUserNameResDto response = GetUserNameResDto.builder()
                 .nickName(userName)
                 .build();
 
-        return ApiResponse.onSuccess(GeneralSuccessCode.OK,  response);
+        return ApiResponse.onSuccess(GeneralSuccessCode.OK, response);
     }
 }
