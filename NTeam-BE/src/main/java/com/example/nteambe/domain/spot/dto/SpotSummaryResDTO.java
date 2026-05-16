@@ -17,5 +17,5 @@ public class SpotSummaryResDTO {
     private String difficulty;
     private String description;
     private List<String> features;
-    private List<String> statuses;
+    private List<List<String>> statusList;
 }

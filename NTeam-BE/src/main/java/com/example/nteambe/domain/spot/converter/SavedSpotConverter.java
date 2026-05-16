@@ -21,8 +21,10 @@ public class SavedSpotConverter {
                 .features(spot.getFeatures().stream()
                         .map(Enum::name)
                         .collect(Collectors.toList()))
-                .statuses(spot.getStatuses().stream()
-                        .map(Enum::name)
+                .statusList(spot.getStatusList().stream()
+                        .map(sl -> sl.getStatuses().stream()
+                                .map(Enum::name)
+                                .collect(Collectors.toList()))
                         .collect(Collectors.toList()))
                 .build();
     }

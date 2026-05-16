@@ -12,7 +12,6 @@ public interface SpotRepository extends JpaRepository<Spot, Long> {
 
     @Query("SELECT DISTINCT s FROM Spot s " +
            "LEFT JOIN FETCH s.features " +
-           "LEFT JOIN FETCH s.statuses " +
            "WHERE (:mainAddress IS NULL OR s.mainAddress = :mainAddress) " +
            "AND (:subAddress IS NULL OR s.subAddress = :subAddress) " +
            "AND (:difficulty IS NULL OR s.difficulty = :difficulty) " +
