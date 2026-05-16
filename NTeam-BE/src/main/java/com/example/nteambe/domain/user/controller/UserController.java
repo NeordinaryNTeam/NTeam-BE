@@ -1,15 +1,13 @@
 package com.example.nteambe.domain.user.controller;
 
 import com.example.nteambe.domain.user.dto.request.SignUpReqDto;
+import com.example.nteambe.domain.user.dto.response.GetUserNameResDto;
 import com.example.nteambe.domain.user.service.UserService;
 import com.example.nteambe.global.apiPayload.ApiResponse;
 import com.example.nteambe.global.apiPayload.code.GeneralSuccessCode;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,5 +35,31 @@ public class UserController {
         }
 
         return ApiResponse.onSuccess(GeneralSuccessCode.OK, "요청을 성공적으로 처리하였습니다.");
+    }
+
+    @Operation(
+            summary = "유저 닉네임 조회 (유저 등록 여부 확인 API)",
+            description = """
+                    ### 유저 등록 여부 확인용으로 사용
+                    
+                    - 유저를 찾을 수 없습니다 에러 발생 시, 회원가입 이력이 없는거에요 !
+                    """
+    )
+    @GetMapping("/me")
+    public ApiResponse<GetUserNameResDto> getUserName(
+            @RequestAttribute Long userId,
+            @RequestHeader String deviceToken
+    ) throws Exception {
+        String userName = userService.getUserNameByToken(deviceToken);
+
+        if (userName == null) {
+            throw new Exception("유저 조회 실패");
+        }
+
+        GetUserNameResDto response = GetUserNameResDto.builder()
+                .nickName(userName)
+                .build();
+
+        return ApiResponse.onSuccess(GeneralSuccessCode.OK,  response);
     }
 }

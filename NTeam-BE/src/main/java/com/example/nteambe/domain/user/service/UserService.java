@@ -32,4 +32,12 @@ public class UserService {
 
         return user.getId();
     }
+
+    public String getUserNameByToken(String token) {
+
+        User user = userRepository.findByToken(token)
+                .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+
+        return user.getNickname();
+    }
 }
