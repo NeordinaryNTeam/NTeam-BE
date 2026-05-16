@@ -6,10 +6,9 @@ import com.example.nteambe.global.apiPayload.ApiResponse;
 import com.example.nteambe.global.apiPayload.code.GeneralSuccessCode;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -41,5 +40,22 @@ public class FileController {
                 .build();
 
         return ApiResponse.onSuccess(GeneralSuccessCode.OK, response);
+    }
+
+
+    @Operation(
+            summary = "파일 조회",
+            description = """
+                    ### 파일 조회 API
+                    
+                    파일을 조회합니다.
+                    response : file Url 
+                    """
+    )
+    @GetMapping("/download")
+    public ResponseEntity<InputStreamResource> download(
+            @RequestParam String url
+    ) {
+        return fileService.viewFile(url);
     }
 }
