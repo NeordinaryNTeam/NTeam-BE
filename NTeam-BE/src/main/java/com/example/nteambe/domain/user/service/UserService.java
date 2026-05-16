@@ -2,6 +2,8 @@ package com.example.nteambe.domain.user.service;
 
 import com.example.nteambe.domain.user.dto.request.SignUpReqDto;
 import com.example.nteambe.domain.user.repository.UserRepository;
+import com.example.nteambe.global.apiPayload.code.GeneralErrorCode;
+import com.example.nteambe.global.apiPayload.exception.ProjectException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,16 +29,16 @@ public class UserService {
 
     public Long getUserIdByToken(String token) {
 
-        User user = userRepository.findByToken(token)
-                .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+        User user = userRepository.findFirstByToken(token)
+                .orElseThrow(() -> new ProjectException(GeneralErrorCode.UNAUTHORIZED));
 
         return user.getId();
     }
 
     public String getUserNameByToken(String token) {
 
-        User user = userRepository.findByToken(token)
-                .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
+        User user = userRepository.findFirstByToken(token)
+                .orElseThrow(() -> new ProjectException(GeneralErrorCode.UNAUTHORIZED));
 
         return user.getNickname();
     }
