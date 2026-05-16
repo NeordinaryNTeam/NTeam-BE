@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name="user")
+@Table(name="users")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,7 +19,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private Long userId;
+    private Long id;
 
     @Column(nullable = false, length = 50)
     private String nickname;

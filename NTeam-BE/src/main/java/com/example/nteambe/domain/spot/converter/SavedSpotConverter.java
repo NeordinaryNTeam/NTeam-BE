@@ -29,7 +29,7 @@ public class SavedSpotConverter {
 
     public static SavedSpotListResDTO toSavedSpotListResDTO(SavedSpot savedSpot) {
         return SavedSpotListResDTO.builder()
-                .savedSpotId(savedSpot.getSavedSpotId())
+                .savedSpotId(savedSpot.getId())
                 .spot(toSpotSummaryResDTO(savedSpot.getSpot()))
                 .build();
     }
