@@ -3,6 +3,7 @@ package com.example.nteambe.domain.spot.service;
 import com.example.nteambe.domain.spot.dto.request.SaveSpotReqDto;
 import com.example.nteambe.domain.spot.dto.response.SaveSpotResDto;
 import com.example.nteambe.domain.spot.dto.response.SpotResDto;
+import com.example.nteambe.domain.spot.dto.response.SpotStatusListResDto;
 import com.example.nteambe.domain.spot.entity.Spot;
 import com.example.nteambe.domain.spot.enums.DifficultyType;
 import com.example.nteambe.domain.spot.enums.FeatureType;
@@ -69,7 +70,6 @@ public class SpotService {
                 .mainAddress(dto.mainAddress())
                 .subAddress(dto.subAddress())
                 .difficulty(dto.difficulty())
-                .description(dto.description())
                 .features(dto.features() != null ? new HashSet<>(dto.features()) : new HashSet<>())
                 .build();
         Spot saved = spotRepository.save(spot);
@@ -77,8 +77,12 @@ public class SpotService {
     }
 
     private SpotResDto toDto(Spot spot) {
-        List<List<StatusType>> statusListDtos = spot.getStatusList().stream()
-                .map(sl -> new ArrayList<>(sl.getStatuses()))
+        List<SpotStatusListResDto> statusListDtos = spot.getStatusList().stream()
+                .map(sl -> SpotStatusListResDto.builder()
+                        .spotStatusListId(sl.getId())
+                        .description(sl.getDescription())
+                        .statuses(new ArrayList<>(sl.getStatuses()))
+                        .build())
                 .collect(Collectors.toList());
 
         return SpotResDto.builder()
@@ -90,7 +94,6 @@ public class SpotService {
                 .mainAddress(spot.getMainAddress())
                 .subAddress(spot.getSubAddress())
                 .difficulty(spot.getDifficulty())
-                .description(spot.getDescription())
                 .features(new ArrayList<>(spot.getFeatures()))
                 .statusList(statusListDtos)
                 .createdAt(spot.getCreatedAt())

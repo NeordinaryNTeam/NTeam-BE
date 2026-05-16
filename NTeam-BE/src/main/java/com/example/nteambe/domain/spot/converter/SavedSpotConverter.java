@@ -17,7 +17,6 @@ public class SavedSpotConverter {
                 .mainAddress(spot.getMainAddress())
                 .subAddress(spot.getSubAddress())
                 .difficulty(spot.getDifficulty().name())
-                .description(spot.getDescription())
                 .features(spot.getFeatures().stream()
                         .map(Enum::name)
                         .collect(Collectors.toList()))

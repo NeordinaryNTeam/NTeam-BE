@@ -15,7 +15,6 @@ public class SpotSummaryResDTO {
     private String mainAddress;
     private String subAddress;
     private String difficulty;
-    private String description;
     private List<String> features;
     private List<List<String>> statusList;
 }

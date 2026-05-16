@@ -24,6 +24,9 @@ public class SpotStatusList {
     @JoinColumn(name = "spot_id", nullable = false)
     private Spot spot;
 
+    @Column(name = "description")
+    private String description;
+
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "spot_status", joinColumns = @JoinColumn(name = "spot_status_list_id"))
     @Enumerated(EnumType.STRING)
