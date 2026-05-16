@@ -30,7 +30,7 @@ public class UserService {
     public Long getUserIdByToken(String token) {
 
         User user = userRepository.findFirstByToken(token)
-                .orElseThrow(() -> new ProjectException(GeneralErrorCode.UNAUTHORIZED));
+                .orElseThrow(() -> new ProjectException(GeneralErrorCode.USER_NOT_FOUND));
 
         return user.getId();
     }
@@ -38,7 +38,7 @@ public class UserService {
     public String getUserNameByToken(String token) {
 
         User user = userRepository.findFirstByToken(token)
-                .orElseThrow(() -> new ProjectException(GeneralErrorCode.UNAUTHORIZED));
+                .orElseThrow(() -> new ProjectException(GeneralErrorCode.USER_NOT_FOUND));
 
         return user.getNickname();
     }

@@ -6,6 +6,7 @@ import com.example.nteambe.domain.user.service.UserService;
 import com.example.nteambe.global.apiPayload.ApiResponse;
 import com.example.nteambe.global.apiPayload.code.GeneralSuccessCode;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -45,6 +46,10 @@ public class UserController {
                     - 유저를 찾을 수 없습니다 에러 발생 시, 회원가입 이력이 없는거에요 !
                     """
     )
+    @ApiResponses({
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "COMMON200_1 - 성공적으로 요청을 처리했습니다."),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "COMMON404_2 - 유저를 찾을 수 없습니다.")
+    })
     @GetMapping("/me")
     public ApiResponse<GetUserNameResDto> getUserName(
             @RequestAttribute Long userId,

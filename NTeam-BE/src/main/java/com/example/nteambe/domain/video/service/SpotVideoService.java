@@ -7,7 +7,10 @@ import com.example.nteambe.domain.user.repository.UserRepository;
 import com.example.nteambe.domain.video.dto.request.SaveVideoReqDto;
 import com.example.nteambe.domain.video.dto.response.VideoResDto;
 import com.example.nteambe.domain.video.entity.SpotVideo;
+import com.example.nteambe.domain.spot.exception.code.SpotErrorCode;
 import com.example.nteambe.domain.video.repository.SpotVideoRepository;
+import com.example.nteambe.global.apiPayload.code.GeneralErrorCode;
+import com.example.nteambe.global.apiPayload.exception.ProjectException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,9 +25,10 @@ public class SpotVideoService {
     private final SpotRepository spotRepository;
 
     public List<VideoResDto> getVideos(Long spotId) {
+        spotRepository.findById(spotId)
+                .orElseThrow(() -> new ProjectException(SpotErrorCode.SPOT_NOT_FOUND));
 
-        List<SpotVideo> videos =
-                spotVideoRepository.findAllBySpotIdOrderByCreatedAtDesc(spotId);
+        List<SpotVideo> videos = spotVideoRepository.findAllBySpotIdOrderByCreatedAtDesc(spotId);
 
         return videos.stream()
                 .map(SpotVideoService::convertVideoToDto)
@@ -35,13 +39,12 @@ public class SpotVideoService {
     public VideoResDto createVideo(
             SaveVideoReqDto request,
             Long userId
-    ) throws Exception {
-
+    ) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new Exception("유저를 찾을 수 없습니다."));
+                .orElseThrow(() -> new ProjectException(GeneralErrorCode.UNAUTHORIZED));
 
         Spot spot = spotRepository.findById(request.spotId())
-                .orElseThrow(() -> new Exception("존재하지 않는 스팟입니다."));
+                .orElseThrow(() -> new ProjectException(SpotErrorCode.SPOT_NOT_FOUND));
 
         SpotVideo spotVideo = SpotVideo.builder()
                 .title(request.title())
